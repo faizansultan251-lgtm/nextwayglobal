@@ -190,43 +190,49 @@ function renderChart(ctx, w, h, type, progress, hoverIndex) {
 
     before.forEach((value, i) => {
       const x = gap * (i + 0.7);
-      drawBar(ctx, x, h, value, 120, "#44576d", progress, hoverIndex === i);
-      drawBar(ctx, x + 14, h, after[i], 120, "#30d8ff", progress, hoverIndex === i);
+      drawBar(ctx, x, h, value, 120, "#94a3b8", progress, hoverIndex === i);
+      drawBar(ctx, x + 14, h, after[i], 120, "#1e6fd6", progress, hoverIndex === i);
     });
-    label(ctx, "Manual QC", 12, 20, "#9ba9ba");
-    label(ctx, "VisionX-AI", 104, 20, "#30d8ff");
+    label(ctx, "Manual QC", 12, 20, "#64748b");
+    label(ctx, "VisionX-AI", 104, 20, "#1e6fd6");
   }
 
   if (type === "line") {
     const defectTrend = [72, 66, 57, 48, 39, 30, 24, 20];
     const accuracy = [38, 48, 58, 70, 80, 87, 92, 95];
-    drawLine(ctx, defectTrend, w, h, "#ffec89", progress, true, hoverIndex);
-    drawLine(ctx, accuracy, w, h, "#30d8ff", progress, false, hoverIndex);
-    label(ctx, "Defects", 12, 20, "#ffec89");
-    label(ctx, "Detection", 94, 20, "#30d8ff");
+    drawLine(ctx, defectTrend, w, h, "#64748b", progress, true, hoverIndex);
+    drawLine(ctx, accuracy, w, h, "#1e6fd6", progress, false, hoverIndex);
+    label(ctx, "Defects", 12, 20, "#64748b");
+    label(ctx, "Detection", 94, 20, "#1e6fd6");
+  }
+
+  if (type === "accuracy") {
+    const vision = [54, 63, 71, 78, 84, 90, 93, 95];
+    drawLine(ctx, vision, w, h, "#1e6fd6", progress, true, hoverIndex);
+    label(ctx, "VisionX-AI detection accuracy", 12, 22, "#1e6fd6");
   }
 
   if (type === "roi") {
     const cost = [100, 92, 84, 76, 66, 57, 48, 42, 37];
     const value = [8, 17, 31, 46, 61, 78, 96, 118, 136];
-    drawLine(ctx, cost, w, h, "#9ba9ba", progress, false, hoverIndex);
-    drawLine(ctx, value, w, h, "#30d8ff", progress, true, hoverIndex);
-    label(ctx, "Cost", 12, 20, "#9ba9ba");
-    label(ctx, "ROI", 68, 20, "#30d8ff");
+    drawLine(ctx, cost, w, h, "#94a3b8", progress, false, hoverIndex);
+    drawLine(ctx, value, w, h, "#1e6fd6", progress, true, hoverIndex);
+    label(ctx, "Cost", 12, 20, "#64748b");
+    label(ctx, "ROI", 68, 20, "#1e6fd6");
   }
 
   if (type === "governance") {
     const nationalIndex = [42, 51, 57, 66, 73, 79, 84, 87];
     const lagRisk = [62, 58, 54, 48, 42, 35, 28, 22];
-    drawLine(ctx, nationalIndex, w, h, "#30d8ff", progress, true, hoverIndex);
-    drawLine(ctx, lagRisk, w, h, "#ffec89", progress, false, hoverIndex);
-    label(ctx, "National index", 12, 20, "#30d8ff");
-    label(ctx, "Lag risk", 126, 20, "#ffec89");
+    drawLine(ctx, nationalIndex, w, h, "#1e6fd6", progress, true, hoverIndex);
+    drawLine(ctx, lagRisk, w, h, "#64748b", progress, false, hoverIndex);
+    label(ctx, "National index", 12, 20, "#1e6fd6");
+    label(ctx, "Lag risk", 126, 20, "#64748b");
   }
 }
 
 function drawGrid(ctx, w, h) {
-  ctx.strokeStyle = "rgba(216, 227, 239, 0.08)";
+  ctx.strokeStyle = "rgba(15, 27, 45, 0.08)";
   ctx.lineWidth = 1;
 
   for (let y = 28; y < h; y += 42) {
@@ -249,7 +255,7 @@ function drawBar(ctx, x, h, value, max, color, progress, active) {
   const y = h - barH - 16;
   ctx.fillStyle = color;
   ctx.shadowColor = color;
-  ctx.shadowBlur = active ? 24 : 10;
+  ctx.shadowBlur = active ? 6 : 0;
   roundRect(ctx, x, y, 12, barH, 4);
   ctx.fill();
   ctx.shadowBlur = 0;
@@ -272,7 +278,7 @@ function drawLine(ctx, values, w, h, color, progress, fill, hoverIndex) {
   ctx.strokeStyle = color;
   ctx.lineWidth = 3;
   ctx.shadowColor = color;
-  ctx.shadowBlur = 14;
+  ctx.shadowBlur = 0;
   ctx.stroke();
 
   if (fill) {
@@ -290,7 +296,7 @@ function drawLine(ctx, values, w, h, color, progress, fill, hoverIndex) {
   visible.forEach((point, index) => {
     ctx.beginPath();
     ctx.arc(point.x, point.y, hoverIndex === index ? 6 : 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = hoverIndex === index ? "#f7fbff" : color;
+    ctx.fillStyle = hoverIndex === index ? "#0f1b2d" : color;
     ctx.fill();
   });
 }
@@ -410,8 +416,8 @@ function initGlobe() {
   }
 
   function drawLatLon(radius, cx, cy) {
-    ctx.strokeStyle = "rgba(111, 194, 255, 0.15)";
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(92, 133, 181, 0.58)";
+    ctx.lineWidth = 1.18;
 
     for (let lat = -60; lat <= 60; lat += 20) {
       ctx.beginPath();
@@ -468,9 +474,9 @@ function initGlobe() {
       const scale = 0.45 + point.z / (radius * 1.8);
       ctx.beginPath();
       ctx.ellipse(point.x, point.y, band.w * scale, band.h * scale, band.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(77, 139, 184, 0.24)";
+      ctx.fillStyle = "rgba(157, 187, 224, 0.22)";
       ctx.fill();
-      ctx.strokeStyle = "rgba(48, 216, 255, 0.08)";
+      ctx.strokeStyle = "rgba(92, 133, 181, 0.34)";
       ctx.stroke();
     });
   }
@@ -485,16 +491,16 @@ function initGlobe() {
 
       ctx.beginPath();
       ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(48, 216, 255, ${0.42 + pulse * 0.28})`;
-      ctx.shadowColor = "#30d8ff";
-      ctx.shadowBlur = 18 * depth;
+      ctx.fillStyle = `rgba(30, 111, 214, ${0.18 + pulse * 0.1})`;
+      ctx.shadowColor = "#1e6fd6";
+      ctx.shadowBlur = 0;
       ctx.fill();
       ctx.shadowBlur = 0;
 
       if (index % 3 === 0) {
         ctx.beginPath();
         ctx.arc(point.x, point.y, size * 4.5, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(48, 216, 255, ${0.08 * pulse})`;
+        ctx.strokeStyle = `rgba(30, 111, 214, ${0.04 * pulse})`;
         ctx.stroke();
       }
     });
@@ -508,10 +514,10 @@ function initGlobe() {
     const mx = (a.x + b.x) / 2;
     const my = (a.y + b.y) / 2 - radius * 0.18;
 
-    ctx.strokeStyle = route.primary ? "rgba(92, 226, 255, 0.86)" : "rgba(48, 216, 255, 0.5)";
+    ctx.strokeStyle = route.primary ? "rgba(30, 111, 214, 0.46)" : "rgba(30, 111, 214, 0.26)";
     ctx.lineWidth = route.primary ? 2.4 : 1.4;
-    ctx.shadowColor = "#30d8ff";
-    ctx.shadowBlur = route.primary ? 18 : 0;
+    ctx.shadowColor = "#1e6fd6";
+    ctx.shadowBlur = 0;
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.quadraticCurveTo(mx, my, b.x, b.y);
@@ -524,9 +530,9 @@ function initGlobe() {
     const y = (1 - t) * (1 - t) * a.y + 2 * (1 - t) * t * my + t * t * b.y;
     ctx.beginPath();
     ctx.arc(x, y, route.primary ? 5.6 : 3.6, 0, Math.PI * 2);
-    ctx.fillStyle = "#f7fbff";
-    ctx.shadowColor = "#30d8ff";
-    ctx.shadowBlur = route.primary ? 34 : 20;
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "#1e6fd6";
+    ctx.shadowBlur = 0;
     ctx.fill();
     ctx.shadowBlur = 0;
 
@@ -535,10 +541,10 @@ function initGlobe() {
         if (node.z < 0) return;
         ctx.beginPath();
         ctx.arc(node.x, node.y, 8, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(48, 216, 255, 0.46)";
+        ctx.strokeStyle = "rgba(30, 111, 214, 0.28)";
         ctx.lineWidth = 1.5;
-        ctx.shadowColor = "#30d8ff";
-        ctx.shadowBlur = 22;
+        ctx.shadowColor = "#1e6fd6";
+        ctx.shadowBlur = 0;
         ctx.stroke();
         ctx.shadowBlur = 0;
       });
@@ -557,18 +563,18 @@ function initGlobe() {
     ctx.clearRect(0, 0, w, h);
 
     const glow = ctx.createRadialGradient(cx, cy, radius * 0.12, cx, cy, radius * 1.1);
-    glow.addColorStop(0, "rgba(48, 216, 255, 0.26)");
-    glow.addColorStop(0.62, "rgba(7, 17, 31, 0.96)");
-    glow.addColorStop(1, "rgba(48, 216, 255, 0)");
+    glow.addColorStop(0, "rgba(255, 255, 255, 0.88)");
+    glow.addColorStop(0.72, "rgba(234, 241, 247, 0.72)");
+    glow.addColorStop(1, "rgba(234, 241, 247, 0)");
     ctx.fillStyle = glow;
     ctx.beginPath();
     ctx.arc(cx, cy, radius * 1.12, 0, Math.PI * 2);
     ctx.fill();
 
     const planet = ctx.createRadialGradient(cx - radius * 0.38, cy - radius * 0.32, radius * 0.08, cx, cy, radius);
-    planet.addColorStop(0, "#365f88");
-    planet.addColorStop(0.5, "#0f2d4a");
-    planet.addColorStop(1, "#030914");
+    planet.addColorStop(0, "#ffffff");
+    planet.addColorStop(0.58, "#dceaf7");
+    planet.addColorStop(1, "#b8cde3");
     ctx.fillStyle = planet;
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -581,22 +587,21 @@ function initGlobe() {
     drawContinents(radius, cx, cy);
     drawLatLon(radius, cx, cy);
     drawElectricLights(radius, cx, cy, time);
-    routes.forEach((route) => drawRoute(route, radius, cx, cy, time));
     ctx.restore();
 
     const bd = project(90, 24, radius, cx, cy);
     if (bd.z > 0) {
       ctx.beginPath();
       ctx.arc(bd.x, bd.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#30d8ff";
-      ctx.shadowColor = "#30d8ff";
-      ctx.shadowBlur = 26;
+      ctx.fillStyle = "#1e6fd6";
+      ctx.shadowColor = "#1e6fd6";
+      ctx.shadowBlur = 0;
       ctx.fill();
       ctx.shadowBlur = 0;
     }
 
-    ctx.strokeStyle = "rgba(247, 251, 255, 0.32)";
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(92, 133, 181, 0.62)";
+    ctx.lineWidth = 1.25;
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -610,3 +615,139 @@ function initGlobe() {
 
 initAtmosphere();
 initGlobe();
+
+const chatbot = document.querySelector(".chatbot");
+const chatbotLauncher = document.querySelector(".chatbot-launcher");
+const chatbotPanel = document.querySelector(".chatbot-panel");
+const chatbotClose = document.querySelector(".chatbot-close");
+const chatbotQuestions = document.querySelector(".chatbot-questions");
+const chatbotAnswer = document.querySelector(".chatbot-answer");
+const chatbotListView = document.querySelector(".chatbot-list-view");
+const chatbotAnswerView = document.querySelector(".chatbot-answer-view");
+const chatbotBack = document.querySelector(".chatbot-back");
+
+const faqItems = [
+  {
+    label: "Who is Nextway?",
+    question: "What is Nextway Global, and how do you support garment factories?",
+    answer:
+      "Nextway Global Ltd. is an industrial digitalization and technology implementation partner based in Bangladesh. We bridge global innovation with local manufacturers by introducing, deploying, and supporting advanced AI solutions that cut operational costs and reduce production inefficiencies. Our flagship solution is VisionX-AI.",
+  },
+  {
+    label: "Who built VisionX-AI?",
+    question: "Is Nextway Global the developer of VisionX-AI?",
+    answer:
+      "Nextway Global is the exclusive local implementation, commercialization, and technical support partner in Bangladesh. The core technology is developed by our international partner, Bamboo Innovations Inc. in Canada, led by Distinguished Research Professor Dr. Anwar Haque. This combines Canadian AI engineering with Nextway Global's on-the-ground industrial expertise in Bangladesh.",
+  },
+  {
+    label: "Implementation process",
+    question: "What does Nextway Global do during implementation?",
+    answer:
+      "We manage the full technology adoption lifecycle so your factory does not experience operational headaches.",
+    bullets: [
+      "Free Factory Assessment for your lines and QC process.",
+      "Hardware and software setup with minimal production disruption.",
+      "Onsite training for floor managers and operators.",
+      "Local 24/7 technical support from our Bangladesh team.",
+    ],
+  },
+  {
+    label: "QC improvement",
+    question: "How does VisionX-AI improve Quality Control?",
+    answer:
+      "Nextway Global replaces slow, inconsistent, and costly manual QC with an automated real-time AI scanning system. Manual inspectors face a fatigue-failure curve where accuracy drops over a shift. VisionX-AI provides instant, non-stop defect alerts and continuous digital quality tracking.",
+  },
+  {
+    label: "Detectable defects",
+    question: "What garment defects can the system detect?",
+    answer:
+      "The AI is trained to identify complex structural and stitching errors. On a standard 5-pocket pant, it can flag:",
+    bullets: [
+      "Skip stitches, uneven stitch shapes, slanted loops, and uneven bottom hems.",
+      "Uneven zipper gaps, pocket openings up/down, and missing bartacks.",
+      "Back yoke and back rise raw edges out.",
+    ],
+  },
+  {
+    label: "Performance data",
+    question: "Can Nextway Global share factory performance data?",
+    answer:
+      "Yes. We have run live pilots in local factory environments, including Tarasima Apparels in Manikganj. Our Proof of Concept data showed 95% defect detection accuracy in factory testing conditions.",
+  },
+  {
+    label: "ROI and disruption",
+    question: "What commercial model and ROI can we expect?",
+    answer:
+      "VisionX-AI is designed as a plug-and-play deployment with minimal line disruption. Nextway Global offers flexible SaaS industrial pricing tailored to line count and volume, with typical payback within 6 to 12 months.",
+  },
+  {
+    label: "Get started",
+    question: "How do I get started with Nextway Global?",
+    answer:
+      "The first step is risk-free. Nextway Global is offering a Free Factory Assessment to evaluate your lines, map potential ROI, and see whether your facility qualifies for an early pilot deployment.",
+    bullets: [
+      "Share your contact details with the Nextway team.",
+      "Schedule an onsite visit with our engineering team.",
+      "Review your assessment and pilot deployment options.",
+    ],
+  },
+];
+
+function renderFaqAnswer(index) {
+  const item = faqItems[index];
+  const bullets = item.bullets
+    ? `<ul>${item.bullets.map((bullet) => `<li>${bullet}</li>`).join("")}</ul>`
+    : "";
+
+  chatbotAnswer.innerHTML = `
+    <h3>${item.question}</h3>
+    <p>${item.answer}</p>
+    ${bullets}
+  `;
+  chatbotListView.classList.add("is-hidden");
+  chatbotAnswerView.classList.add("is-active");
+  chatbotAnswerView.setAttribute("aria-hidden", "false");
+
+  document.querySelectorAll(".chatbot-question").forEach((button) => {
+    button.classList.toggle("is-active", Number(button.dataset.faqIndex) === index);
+  });
+}
+
+function showChatbotQuestions() {
+  chatbotListView.classList.remove("is-hidden");
+  chatbotAnswerView.classList.remove("is-active");
+  chatbotAnswerView.setAttribute("aria-hidden", "true");
+}
+
+function initChatbot() {
+  if (!chatbot || !chatbotLauncher || !chatbotQuestions || !chatbotAnswer || !chatbotBack) return;
+
+  faqItems.forEach((item, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "chatbot-question";
+    button.dataset.faqIndex = String(index);
+    button.textContent = item.question;
+    button.addEventListener("click", () => renderFaqAnswer(index));
+    chatbotQuestions.appendChild(button);
+  });
+
+  chatbotLauncher.addEventListener("click", () => {
+    const isOpen = chatbot.classList.toggle("is-open");
+    chatbotLauncher.setAttribute("aria-expanded", String(isOpen));
+    chatbotPanel.setAttribute("aria-hidden", String(!isOpen));
+  });
+
+  chatbotClose.addEventListener("click", () => {
+    chatbot.classList.remove("is-open");
+    chatbotLauncher.setAttribute("aria-expanded", "false");
+    chatbotPanel.setAttribute("aria-hidden", "true");
+    showChatbotQuestions();
+  });
+
+  chatbotAnswer.innerHTML = "";
+  chatbotBack.addEventListener("click", showChatbotQuestions);
+  showChatbotQuestions();
+}
+
+initChatbot();
