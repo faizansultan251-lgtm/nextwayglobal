@@ -397,13 +397,16 @@
           <div class="demo-video-frame">
             <video
               src="assets/visionx-demo.mov"
+              autoplay
               controls
-              muted
               loop
               playsinline
-              preload="metadata"
+              preload="auto"
               aria-label="VisionX-AI quality inspection demo video"
             ></video>
+            <button class="demo-sound-prompt" type="button" hidden>
+              Tap for sound
+            </button>
             <div class="demo-overlay" aria-hidden="true">
               <span>Live AI Scan</span>
               <strong>Defect intelligence preview</strong>

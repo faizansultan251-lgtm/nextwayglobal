@@ -8,6 +8,8 @@ const chartCanvases = document.querySelectorAll(".chart-canvas");
 const heatmap = document.querySelector(".heatmap-grid");
 const atmosphereCanvas = document.querySelector("#atmosphere");
 const globeCanvas = document.querySelector("#globeCanvas");
+const demoVideo = document.querySelector(".demo-video-frame video");
+const demoSoundPrompt = document.querySelector(".demo-sound-prompt");
 
 let pointer = {
   x: window.innerWidth * 0.62,
@@ -719,6 +721,42 @@ function showChatbotQuestions() {
   chatbotAnswerView.setAttribute("aria-hidden", "true");
 }
 
+function initDemoVideoAutoplay() {
+  if (!demoVideo) return;
+
+  const playWithSound = async () => {
+    demoVideo.muted = false;
+    demoVideo.defaultMuted = false;
+    demoVideo.volume = 1;
+
+    try {
+      await demoVideo.play();
+      if (demoSoundPrompt) demoSoundPrompt.hidden = true;
+      return true;
+    } catch (error) {
+      if (demoSoundPrompt) demoSoundPrompt.hidden = false;
+      return false;
+    }
+  };
+
+  playWithSound();
+  window.addEventListener("load", playWithSound, { once: true });
+
+  if (demoSoundPrompt) {
+    demoSoundPrompt.addEventListener("click", playWithSound);
+  }
+
+  ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
+    window.addEventListener(
+      eventName,
+      () => {
+        if (demoVideo.paused) playWithSound();
+      },
+      { once: true, passive: true }
+    );
+  });
+}
+
 function initChatbot() {
   if (!chatbot || !chatbotLauncher || !chatbotQuestions || !chatbotAnswer || !chatbotBack) return;
 
@@ -750,4 +788,5 @@ function initChatbot() {
   showChatbotQuestions();
 }
 
+initDemoVideoAutoplay();
 initChatbot();

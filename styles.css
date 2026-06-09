@@ -1489,6 +1489,31 @@ p {
   background: #02070d;
 }
 
+.demo-sound-prompt {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #ffffff;
+  background: rgba(5, 12, 22, 0.78);
+  box-shadow: 0 10px 26px rgba(2, 7, 13, 0.24);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.demo-sound-prompt[hidden] {
+  display: none;
+}
+
 .demo-video-frame::before {
   position: absolute;
   inset: 0;
@@ -4542,6 +4567,14 @@ main > .hero.section {
 
   .demo-overlay strong {
     font-size: 0.76rem;
+  }
+
+  .demo-sound-prompt {
+    right: 10px;
+    bottom: 10px;
+    min-height: 34px;
+    padding: 0 11px;
+    font-size: 0.68rem;
   }
 
   .demo-notes span {
