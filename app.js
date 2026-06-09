@@ -724,37 +724,73 @@ function showChatbotQuestions() {
 function initDemoVideoAutoplay() {
   if (!demoVideo) return;
 
-  const playWithSound = async () => {
-    demoVideo.muted = false;
-    demoVideo.defaultMuted = false;
-    demoVideo.volume = 1;
+  let userPaused = false;
+  let hasPlayed = false;
 
+  demoVideo.addEventListener("pause", () => {
+    if (!demoVideo.ended && demoVideo.currentTime > 0) {
+      userPaused = true;
+    }
+  });
+
+  demoVideo.addEventListener("play", () => {
+    userPaused = false;
+    hasPlayed = true;
+  });
+
+  const playInView = async (withSound) => {
+    if (userPaused) return false;
+    if (withSound) {
+      demoVideo.muted = false;
+      demoVideo.defaultMuted = false;
+      demoVideo.volume = 1;
+    }
     try {
       await demoVideo.play();
       if (demoSoundPrompt) demoSoundPrompt.hidden = true;
       return true;
     } catch (error) {
-      if (demoSoundPrompt) demoSoundPrompt.hidden = false;
+      if (withSound) {
+        demoVideo.muted = true;
+        try {
+          await demoVideo.play();
+          if (demoSoundPrompt) demoSoundPrompt.hidden = false;
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
       return false;
     }
   };
 
-  playWithSound();
-  window.addEventListener("load", playWithSound, { once: true });
-
-  if (demoSoundPrompt) {
-    demoSoundPrompt.addEventListener("click", playWithSound);
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            if (demoVideo.paused && !userPaused) {
+              playInView(!hasPlayed);
+            }
+          } else if (!entry.isIntersecting) {
+            if (!demoVideo.paused) {
+              userPaused = false;
+              demoVideo.pause();
+            }
+          }
+        });
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+    observer.observe(demoVideo);
   }
 
-  ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
-    window.addEventListener(
-      eventName,
-      () => {
-        if (demoVideo.paused) playWithSound();
-      },
-      { once: true, passive: true }
-    );
-  });
+  if (demoSoundPrompt) {
+    demoSoundPrompt.addEventListener("click", () => {
+      userPaused = false;
+      playInView(true);
+    });
+  }
 }
 
 function initChatbot() {
