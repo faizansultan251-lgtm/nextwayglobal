@@ -563,18 +563,18 @@ function initGlobe() {
     ctx.clearRect(0, 0, w, h);
 
     const glow = ctx.createRadialGradient(cx, cy, radius * 0.12, cx, cy, radius * 1.1);
-    glow.addColorStop(0, "rgba(255, 255, 255, 0.88)");
-    glow.addColorStop(0.72, "rgba(234, 241, 247, 0.72)");
-    glow.addColorStop(1, "rgba(234, 241, 247, 0)");
+    glow.addColorStop(0, "rgba(238, 250, 255, 0.9)");
+    glow.addColorStop(0.72, "rgba(199, 226, 247, 0.74)");
+    glow.addColorStop(1, "rgba(159, 205, 239, 0)");
     ctx.fillStyle = glow;
     ctx.beginPath();
     ctx.arc(cx, cy, radius * 1.12, 0, Math.PI * 2);
     ctx.fill();
 
     const planet = ctx.createRadialGradient(cx - radius * 0.38, cy - radius * 0.32, radius * 0.08, cx, cy, radius);
-    planet.addColorStop(0, "#ffffff");
-    planet.addColorStop(0.58, "#dceaf7");
-    planet.addColorStop(1, "#b8cde3");
+    planet.addColorStop(0, "#f3fbff");
+    planet.addColorStop(0.58, "#c7e2f7");
+    planet.addColorStop(1, "#8fb8da");
     ctx.fillStyle = planet;
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
